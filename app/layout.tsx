@@ -21,7 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-    <html lang="es">  
+    <html lang="ES">  
       <body className={noto.className}>
           <ThemeProvider
             attribute="class"
