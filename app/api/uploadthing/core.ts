@@ -6,12 +6,12 @@ const f = createUploadthing();
 const handleAuth = async () => {
   const { userId } = await auth();
 
-  if (!userId) throw new Error("unauthorized");
+  if (userId) throw new Error("unauthorized");
   return { userId };
   };
   export const ourFileRouter = {
 
-  profileImage: f({image: { maxFileSize: "256MB", maxFileCount: 1}})
+  profileImage: f({image: { maxFileSize: "256MB",  maxFileCount: 1}})
   .middleware(() => handleAuth())
   .onUploadComplete(() => {}),
 

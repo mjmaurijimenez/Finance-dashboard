@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { useState } from "react"
+import axios from "axios"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -18,6 +19,10 @@ import { Input } from "@/components/ui/input"
 import { FormCreateCustomerProps } from "./FormCreateCustomer.type"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { UploadButton } from "@/app/utils/uploadthing"
+import { toast } from "sonner"
+import { useRouter } from "next/navigation"
+
+
 
 
 const formSchema = z.object({
@@ -31,6 +36,7 @@ const formSchema = z.object({
 
 export function FormCreateCustomer(props: FormCreateCustomerProps) {
     const { setOpenModalCreate } = props
+    const router = useRouter();
     const [photoUploaded, setPhotoUploaded] = useState(false)
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -50,8 +56,16 @@ const {isValid} = form.formState
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
 
-    console.log(values)
-}
+    try {
+        axios.post("/api/company", values)
+        toast("Company created")
+        router.refresh();
+        setOpenModalCreate(false)
+
+    } catch (error) {
+        toast("Something went wrong")
+        console.log(error)
+    }}
     return (
     <Form {...form}>
     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -93,7 +107,6 @@ const {isValid} = form.formState
                     <SelectItem value="Portugal">Portugal</SelectItem>
                     <SelectItem value="United Kingdom">United Kingdom</SelectItem>
                 </SelectContent>
-
                 </Select>
             <FormMessage />
             </FormItem>           
@@ -146,24 +159,31 @@ const {isValid} = form.formState
             <FormItem>
             <FormLabel>Profile Image</FormLabel>
             <FormControl>
-                <UploadButton className="bg-slate-600/20 text-slate-800 rounded-lg outline-dotted outline-3 "
+                {photoUploaded ? (
+                    <p className="text-sm"> Image uploaded</p>
+                ) : (
+                    <UploadButton  className="bg-slate-600/20 text-slate-800 rounded-lg outline-dotted outline-3"
+                {...field}
                 endpoint="profileImage"
                 onClientUploadComplete={(res) => {
                     form.setValue("profileImage", res?.[0].url)
+                    toast("Photo uploaded")           
                     setPhotoUploaded(true)
                 }}
                 onUploadError={(error: Error) => {
-                    console.log("error image")
-                }}
-                />
+                    toast("Error uploading image")
+                    console.log(error);
+                }}/>
+                ) }
+                
             </FormControl>          
             <FormMessage />
             </FormItem>           
-        )}
-        />
+        )}/>
         </div>
-        <Button type="submit">Submit</Button>
+        <Button type="submit" disabled={isValid}>Submit</Button>
     </form>
     </Form>
     )
+
 }

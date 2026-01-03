@@ -4,7 +4,7 @@ import type { NextRequest } from 'next/server';
 
 export default clerkMiddleware(async (auth, req: NextRequest) => {
   
-  const isPublicRoute = createRouteMatcher(["/api/uploadthing","/sign-in","/sign-up","/","/companies"]);
+  const isPublicRoute = createRouteMatcher(["/api/uploadthing","/sign-in(.*)","/sign-up(.*)","/","/companies","/api/(.*)"]);
 
   if (isPublicRoute(req)) return;
 

@@ -1,8 +1,9 @@
+
 import type { Metadata } from "next";
 import { Noto_Sans_Display} from "next/font/google";
 import { ClerkProvider } from '@clerk/nextjs'
 import { ThemeProvider } from "@/components/theme-provider"
-
+import { Toaster } from "@/components/ui/sonner"
 
 import "./globals.css";
 
@@ -21,15 +22,15 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-    <html lang="ES">  
+    <html lang="ES" className="dark">  
       <body className={noto.className}>
           <ThemeProvider
             attribute="class"
-            
             enableSystem
             disableTransitionOnChange
           >
             {children}
+            <Toaster />
           </ThemeProvider>
 
         
@@ -38,4 +39,4 @@ export default function RootLayout({
     </ClerkProvider>
   ) 
 };
-    
+
